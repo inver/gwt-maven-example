@@ -6,8 +6,8 @@
 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.hpfsc</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>net.nevinsky</groupId>
+    <artifactId>app</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -15,17 +15,22 @@ http://maven.apache.org/maven-v4_0_0.xsd">
         <module>server</module>
         <module>shared</module>
         <module>web</module>
+        <module>global</module>
+        <module>core</module>
     </modules>
 
     <properties>
         <gwtVersion>2.5.0</gwtVersion>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <tomcat.webport>8082</tomcat.webport>
         <tomcat.ajpport>8182</tomcat.ajpport>
-        <tomcat.context>/parent</tomcat.context>
-    </properties>
+        <tomcat.context>/</tomcat.context>
 
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <spring4gwt.version>0.0.1</spring4gwt.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -97,4 +102,11 @@ http://maven.apache.org/maven-v4_0_0.xsd">
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>spring4gwt</id>
+            <url>http://gwtrepo.googlecode.com/svn/repo/</url>
+        </repository>
+    </repositories>
 </project>

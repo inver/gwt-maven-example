@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>de.hpfsc</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>net.nevinsky</groupId>
+        <artifactId>app</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
@@ -15,15 +15,28 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.hpfsc</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>shared</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.hpfsc</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>server</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spring4gwt</groupId>
+            <artifactId>spring4gwt</artifactId>
+            <version>${spring4gwt.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -49,7 +62,7 @@
                 <!-- Plugin configuration. There are many available options, see
                           gwt-maven-plugin documentation at codehaus.org -->
                 <configuration>
-                    <runTarget>parent.html</runTarget>
+                    <runTarget>app.html</runTarget>
                     <draftCompile>true</draftCompile>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <noServer>true</noServer>

@@ -44,8 +44,8 @@ Feedback
 
 Feedback is very welcome! You can reach me via:
 
-* Email - seb-DOT-kde-AT-hpfsc.de
-* Web - [sebstein.hpfsc.de](http://sebstein.hpfsc.de/)
+* Email - seb-DOT-kde-AT-hpfsc.net
+* Web - [sebstein.hpfsc.net](http://sebstein.hpfsc.net/)
 * Twitter - [@stein2](https://twitter.com/stein2)
 
 
