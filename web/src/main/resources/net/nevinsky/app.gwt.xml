@@ -18,8 +18,10 @@
     <inherits name="net.nevinsky.shared"/>
     <inherits name="net.nevinsky.server"/>
 
-    <!-- Specify the app entry point class.                         -->
-    <entry-point class='net.nevinsky.web.app'/>
+    <!-- Specify the App entry point class.                         -->
+    <entry-point class='net.nevinsky.web.App'/>
+
+    <set-property name="user.agent" value="safari"/>
 
     <!-- Specify the paths for translatable code                    -->
     <source path='web'/>

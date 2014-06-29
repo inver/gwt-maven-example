@@ -28,8 +28,14 @@ http://maven.apache.org/maven-v4_0_0.xsd">
         <tomcat.ajpport>8182</tomcat.ajpport>
         <tomcat.context>/</tomcat.context>
 
-        <spring.version>3.0.5.RELEASE</spring.version>
-        <spring4gwt.version>0.0.1</spring4gwt.version>
+        <spring.version>4.0.5.RELEASE</spring.version>
+        <spring.dataJpa.version>1.1.2.RELEASE</spring.dataJpa.version>
+
+        <hibernate.version>4.2.2.Final</hibernate.version>
+        <hibernate.jpaApi.version>1.0.1.Final</hibernate.jpaApi.version>
+        <c3p0.version>0.9.1.2</c3p0.version>
+
+        <org.aspectj-version>1.6.9</org.aspectj-version>
     </properties>
     <dependencies>
         <dependency>
@@ -63,11 +69,23 @@ http://maven.apache.org/maven-v4_0_0.xsd">
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
+
+        <!--logging-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
     </dependencies>
 
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>

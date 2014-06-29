@@ -2,138 +2,159 @@ package net.nevinsky.web;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import net.nevinsky.shared.FieldVerifier;
+import net.nevinsky.shared.SharedEmployee;
+import net.nevinsky.web.employee.EmployeeService;
+import net.nevinsky.web.employee.EmployeeServiceAsync;
+
+import java.util.List;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class app implements EntryPoint {
-    /**
-     * The message displayed to the user when the server cannot be reached or
-     * returns an error.
-     */
-    private static final String SERVER_ERROR = "An error occurred while "
-            + "attempting to contact the server. Please check your network "
-            + "connection and try again.";
+public class App implements EntryPoint {
 
-    /**
-     * Create a remote service proxy to talk to the server-side Greeting service.
-     */
-    private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+    private EmployeeServiceAsync employeeService = GWT.create(EmployeeService.class);
 
-    private final Messages messages = GWT.create(Messages.class);
+    private HorizontalPanel employeePanel = new HorizontalPanel();
+    private HorizontalPanel textPanel = new HorizontalPanel();
+    private HorizontalPanel editPanel = new HorizontalPanel();
 
-    /**
-     * This is the entry point method.
-     */
+    private Label authorLabel = new Label("Author:");
+    private Label textLabel = new Label("Text:");
+    private TextBox authorTextBox = new TextBox();
+    private TextBox textTextBox = new TextBox();
+
+    private Button addButton = new Button("Add");
+    private Button updateButton = new Button("Update");
+    private Button deleteButton = new Button("Delete");
+
+    private FlexTable greetingsFlexTable = new FlexTable();
+
+    @Override
     public void onModuleLoad() {
-        final Button sendButton = new Button(messages.sendButton());
-        final TextBox nameField = new TextBox();
-        nameField.setText(messages.nameField());
-        final Label errorLabel = new Label();
+        initWidgets();
+        initHandlers();
 
-        // We can add style names to widgets
-        sendButton.addStyleName("sendButton");
+        refreshGreetingsTable();
+    }
 
-        // Add the nameField and sendButton to the RootPanel
-        // Use RootPanel.get() to get the entire body element
-        RootPanel.get("nameFieldContainer").add(nameField);
-        RootPanel.get("sendButtonContainer").add(sendButton);
-        RootPanel.get("errorLabelContainer").add(errorLabel);
+    private void initWidgets() {
+        authorLabel.setWidth("50");
+        authorTextBox.setWidth("100");
+        employeePanel.add(authorLabel);
+        employeePanel.add(authorTextBox);
 
-        // Focus the cursor on the name field when the app loads
-        nameField.setFocus(true);
-        nameField.selectAll();
+        textLabel.setWidth("50");
+        textTextBox.setWidth("100");
+        textPanel.add(textLabel);
+        textPanel.add(textTextBox);
 
-        // Create the popup dialog box
-        final DialogBox dialogBox = new DialogBox();
-        dialogBox.setText("Remote Procedure Call");
-        dialogBox.setAnimationEnabled(true);
-        final Button closeButton = new Button("Close");
-        // We can set the id of a widget by accessing its Element
-        closeButton.getElement().setId("closeButton");
-        final Label textToServerLabel = new Label();
-        final HTML serverResponseLabel = new HTML();
-        VerticalPanel dialogVPanel = new VerticalPanel();
-        dialogVPanel.addStyleName("dialogVPanel");
-        dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-        dialogVPanel.add(textToServerLabel);
-        dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-        dialogVPanel.add(serverResponseLabel);
-        dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-        dialogVPanel.add(closeButton);
-        dialogBox.setWidget(dialogVPanel);
+        addButton.setWidth("50");
+        updateButton.setWidth("50");
+        deleteButton.setWidth("50");
+        editPanel.add(addButton);
+        editPanel.add(updateButton);
+        editPanel.add(deleteButton);
 
-        // Add a handler to close the DialogBox
-        closeButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                dialogBox.hide();
-                sendButton.setEnabled(true);
-                sendButton.setFocus(true);
+        RootPanel.get().add(employeePanel);
+        RootPanel.get().add(textPanel);
+        RootPanel.get().add(editPanel);
+        RootPanel.get().add(greetingsFlexTable);
+    }
+
+    private void initHandlers() {
+        final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("ERROR: Cannot edit greetings!");
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                refreshGreetingsTable();
+            }
+        };
+
+        addButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                if (!authorTextBox.getText().isEmpty() &&
+                        !textTextBox.getText().isEmpty()) {
+                    employeeService.getEmployee(textTextBox.getText(),
+                            new AsyncCallback<SharedEmployee>() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    Window.alert("ERROR: Cannot find greeting!");
+                                }
+
+                                @Override
+                                public void onSuccess(SharedEmployee result) {
+                                    if (result == null) {
+//                                        employeeService.createEmployee(authorTextBox.getText(),
+//                                                textTextBox.getText(), callback);
+                                    } else {
+                                        Window.alert("Greeting already exists!");
+                                    }
+                                }
+                            });
+                } else {
+                    Window.alert("\"Author\" and \"Text\" fields cannot be empty!");
+                }
             }
         });
 
-        // Create a handler for the sendButton and nameField
-        class MyHandler implements ClickHandler, KeyUpHandler {
-            /**
-             * Fired when the user clicks on the sendButton.
-             */
+        updateButton.addClickHandler(new ClickHandler() {
+            @Override
             public void onClick(ClickEvent event) {
-                sendNameToServer();
-            }
-
-            /**
-             * Fired when the user types in the nameField.
-             */
-            public void onKeyUp(KeyUpEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    sendNameToServer();
+                if (!authorTextBox.getText().isEmpty() &&
+                        !textTextBox.getText().isEmpty()) {
+//                    employeeService.updateEmployee(authorTextBox.getText(),
+//                            textTextBox.getText(), callback);
+                } else {
+                    Window.alert("\"Author\" and \"Text\" fields cannot be empty!");
                 }
             }
+        });
 
-            /**
-             * Send the name from the nameField to the server and wait for a response.
-             */
-            private void sendNameToServer() {
-                // First, we validate the input.
-                errorLabel.setText("");
-                String textToServer = nameField.getText();
-                if (!FieldVerifier.isValidName(textToServer)) {
-                    errorLabel.setText("Please enter at least four characters");
-                    return;
-                }
-
-                // Then, we send the input to the server.
-                sendButton.setEnabled(false);
-                textToServerLabel.setText(textToServer);
-                serverResponseLabel.setText("");
-                greetingService.greetServer(textToServer, new AsyncCallback<String>() {
-                    public void onFailure(Throwable caught) {
-                        // Show the RPC error message to the user
-                        dialogBox.setText("Remote Procedure Call - Failure");
-                        serverResponseLabel.addStyleName("serverResponseLabelError");
-                        serverResponseLabel.setHTML(SERVER_ERROR);
-                        dialogBox.center();
-                        closeButton.setFocus(true);
-                    }
-
-                    public void onSuccess(String result) {
-                        dialogBox.setText("Remote Procedure Call");
-                        serverResponseLabel.removeStyleName("serverResponseLabelError");
-                        serverResponseLabel.setHTML(result);
-                        dialogBox.center();
-                        closeButton.setFocus(true);
-                    }
-                });
+        deleteButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+//                employeeService.deleteEmployee(textTextBox.getText(), callback);
             }
-        }
-
-        // Add a handler to send the name to the server
-        MyHandler handler = new MyHandler();
-        sendButton.addClickHandler(handler);
-        nameField.addKeyUpHandler(handler);
+        });
     }
+
+    private void refreshGreetingsTable() {
+        employeeService.list(new AsyncCallback<List<SharedEmployee>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert("ERROR: Cannot load greetings!");
+            }
+
+            @Override
+            public void onSuccess(List<SharedEmployee> greetings) {
+                fillGreetingsTable(greetings);
+            }
+        });
+    }
+
+    private void fillGreetingsTable(List<SharedEmployee> greetings) {
+        greetingsFlexTable.removeAllRows();
+
+        greetingsFlexTable.setText(0, 0, "Author");
+        greetingsFlexTable.setText(0, 1, "Text");
+
+        for (SharedEmployee greeting : greetings) {
+            int row = greetingsFlexTable.getRowCount();
+
+//            greetingsFlexTable.setText(row, 0, greeting.getAuthor());
+//            greetingsFlexTable.setText(row, 1, greeting.getText());
+        }
+    }
+
 }

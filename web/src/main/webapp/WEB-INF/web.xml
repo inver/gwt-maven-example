@@ -9,9 +9,19 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <!--<context-param>-->
+    <!--<param-name>contextConfigLocation</param-name>-->
+    <!--<param-value>-->
+    <!--/WEB-INF/applicationContext.xml-->
+    <!--classpath:data.xml-->
+    <!--</param-value>-->
+    <!--</context-param>-->
+
+
     <servlet>
         <servlet-name>springGwtRemoteServiceServlet</servlet-name>
-        <servlet-class>org.spring4gwt.server.SpringGwtRemoteServiceServlet</servlet-class>
+        <!--<servlet-class>org.spring4gwt.server.SpringGwtRemoteServiceServlet</servlet-class>-->
+        <servlet-class>net.nevinsky.server.GwtRemoteServiceServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/applicationContext.xml</param-value>
