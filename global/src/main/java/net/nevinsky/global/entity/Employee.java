@@ -32,6 +32,18 @@ public class Employee implements Serializable {
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
     private String description;
 
+    public Employee() {
+    }
+
+    public Employee(String firstName, String lastName, String secondName, int age, String experience, String description) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.secondName = secondName;
+        this.age = age;
+        this.experience = experience;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }

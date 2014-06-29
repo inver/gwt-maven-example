@@ -16,7 +16,7 @@
    		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <!-- app.properties file -->
-    <context:property-placeholder properties-ref="deployProperties" system-properties-mode="FALLBACK"/>
+    <context:property-placeholder properties-ref="deployProperties"/>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 

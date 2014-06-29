@@ -9,7 +9,7 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
     <context:component-scan base-package="net.nevinsky.server"/>
 
-    <context:property-placeholder properties-ref="deployProperties" system-properties-mode="FALLBACK"/>
+    <context:property-placeholder properties-ref="deployProperties"/>
 
     <bean id="deployProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean"
           p:location="classpath:app.properties"/>
